@@ -1,96 +1,28 @@
-Perfect 👍 you created the repo on GitHub.
+name: DevSecOps Security Pipeline
 
-Now we connect your **local project in VS Code** to that repo.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
-Follow this exactly 👇
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
 
----
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-# 🚀 Step 1 — Open Your Project Folder in VS Code
+      # SECRET SCAN
+      - name: Run Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          fail: true
 
-In VS Code:
+      # DEPENDENCY SCAN
+      - name: Install Dependencies
+        run: npm install
 
-* Click **File → Open Folder**
-* Open your project folder
-  (the one with `server.js`, `package.json`)
-
----
-
-# 🚀 Step 2 — Open Terminal in VS Code
-
-Press:
-
-```
-Ctrl + `
-```
-
-Make sure terminal path shows your project folder.
-
----
-
-# 🚀 Step 3 — Connect to GitHub Repo
-
-Now run these commands one by one:
-
-```bash
-git init
-git add .
-git commit -m "initial commit"
-git branch -M main
-```
-
-Now connect to your GitHub repo:
-
-Go to your GitHub repo page and copy the HTTPS URL.
-
-It looks like:
-
-```
-https://github.com/YOUR_USERNAME/college-event-portal.git
-```
-
-Now run:
-
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/college-event-portal.git
-git push -u origin main
-```
-
-(Replace YOUR_USERNAME)
-
----
-
-# 🔐 If It Asks For Login
-
-It may ask:
-
-* Username
-* Password
-
-Use:
-
-* GitHub username
-* GitHub Personal Access Token (not password)
-
-If you don’t have token, tell me — I’ll guide you.
-
----
-
-# ✅ After Push
-
-Refresh your GitHub page.
-
-You should see:
-
-```
-server.js
-package.json
-node_modules (maybe ignored)
-```
-
----
-
-Tell me:
-
-Did `git push` work?
-Or did it give an authentication error?
+      - name: Run NPM Audit
+        run: npm audit --audit-level=high
