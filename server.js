@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 
 const app = express();
-
+const API_KEY = "SECRET-123456-API-KEY";
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
